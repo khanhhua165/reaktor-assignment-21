@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useMemo } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ItemsContext } from "../contexts/Contexts";
+import { ItemsContext } from "../contexts/ItemsContext";
 import ClothesItem from "./ClothesItem";
 
 interface ItemParams {
@@ -18,25 +18,37 @@ export interface Item {
 }
 
 const ClothesItems = (props: ClothesItemsProps) => {
-  const [currentType, setcurrentType] = useState<string>(
-    props.match.params.item
+  const { beanies, facemasks, gloves } = useContext(ItemsContext);
+  const beaniesResults = useMemo(
+    () => beanies.map((item: Item) => <ClothesItem key={item.id} {...item} />),
+    [beanies]
   );
-  useEffect(() => {
-    console.log("trigger");
-    setcurrentType(props.match.params.item);
-  }, [props.match.params.item]);
-  const itemsContext = useContext(ItemsContext);
-  let currentItems = itemsContext[currentType];
-  console.log(currentItems);
+  const facemasksResults = useMemo(
+    () =>
+      facemasks.map((item: Item) => <ClothesItem key={item.id} {...item} />),
+    [facemasks]
+  );
+  const glovesResults = useMemo(
+    () => gloves.map((item: Item) => <ClothesItem key={item.id} {...item} />),
+    [gloves]
+  );
+
   let result: JSX.Element[];
-  if (!currentItems) {
-    result = null!;
-  } else {
-    result = currentItems.map((item: Item) => (
-      <ClothesItem key={item.id} {...item} />
-    ));
+  switch (props.match.params.item) {
+    case "beanies":
+      result = beaniesResults;
+      break;
+    case "facemasks":
+      result = facemasksResults;
+      break;
+    case "gloves":
+      result = glovesResults;
+      break;
+    default:
+      result = null!;
   }
-  return <div className="flex flex-col divide-y-2">{result}</div>;
+
+  return <div className="grid grid-cols-4 gap-3 mt-4">{result}</div>;
 };
 
 export default ClothesItems;
