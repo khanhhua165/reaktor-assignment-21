@@ -12,7 +12,10 @@ const App: React.FC = () => {
           <Navbar />
           <Switch>
             <Redirect from="/" exact to="/beanies" />
-            <Route path="/:item" component={ClothesItems} />
+            <Route
+              path="/:item"
+              render={(routeProps) => <ClothesItems {...routeProps} />}
+            />
           </Switch>
         </div>
       </ItemsProvider>

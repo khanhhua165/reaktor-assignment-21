@@ -1,7 +1,13 @@
-import React, { useContext, useMemo } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import React, { useContext } from "react";
+import {
+  NavLink,
+  Redirect,
+  Route,
+  RouteComponentProps,
+  Switch,
+} from "react-router-dom";
 import { ItemsContext } from "../contexts/ItemsContext";
-import ClothesItem from "./ClothesItem";
+import DisplayedItems from "./DisplayedItems";
 
 interface ItemParams {
   item: string;
@@ -18,37 +24,38 @@ export interface Item {
 }
 
 const ClothesItems = (props: ClothesItemsProps) => {
-  const { beanies, facemasks, gloves } = useContext(ItemsContext);
-  const beaniesResults = useMemo(
-    () => beanies.map((item: Item) => <ClothesItem key={item.id} {...item} />),
-    [beanies]
+  const allItems = useContext(ItemsContext);
+  const currentItems = allItems[props.match.params.item];
+  if (!currentItems) return null;
+  const itemsPerPage = 20;
+  const totalPage = [
+    ...Array(Math.ceil(currentItems.length / itemsPerPage)).keys(),
+  ].map((page) => page + 1);
+  const pageNavigation = totalPage.map((page) => (
+    <NavLink key={page} to={`${props.match.url}/${page}`}>
+      {page}
+    </NavLink>
+  ));
+  return (
+    <>
+      <div className="grid grid-cols-1 gap-3 px-2 mt-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <Switch>
+          <Route exact path={props.match.url}>
+            <Redirect to={`${props.match.url}/1`} />
+          </Route>
+          <Route
+            path={`${props.match.url}/:page`}
+            render={(routeProps) => (
+              <DisplayedItems {...routeProps} items={currentItems} />
+            )}
+          />
+        </Switch>
+      </div>
+      <div className="flex flex-wrap w-4/5 mx-auto space-x-2">
+        {pageNavigation}
+      </div>
+    </>
   );
-  const facemasksResults = useMemo(
-    () =>
-      facemasks.map((item: Item) => <ClothesItem key={item.id} {...item} />),
-    [facemasks]
-  );
-  const glovesResults = useMemo(
-    () => gloves.map((item: Item) => <ClothesItem key={item.id} {...item} />),
-    [gloves]
-  );
-
-  let result: JSX.Element[];
-  switch (props.match.params.item) {
-    case "beanies":
-      result = beaniesResults;
-      break;
-    case "facemasks":
-      result = facemasksResults;
-      break;
-    case "gloves":
-      result = glovesResults;
-      break;
-    default:
-      result = null!;
-  }
-
-  return <div className="grid grid-cols-4 gap-3 mt-4">{result}</div>;
 };
 
 export default ClothesItems;

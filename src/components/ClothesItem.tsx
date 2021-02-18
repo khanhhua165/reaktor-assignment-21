@@ -3,7 +3,7 @@ import { Item } from "./ClothesItems";
 
 const ClothesItem = ({ id, type, name, color, price, manufacturer }: Item) => {
   return (
-    <div className="flex flex-col items-start bg-gray-300 rounded-md">
+    <div className="flex flex-col items-start pl-4 bg-gray-300 rounded-md">
       <div className="">ID: {id}</div>
       <div>type: {type}</div>
       <div className="">name: {name}</div>
