@@ -5,3 +5,7 @@
 .active {
   @apply border-b-4 border-blue-400;
 }
+
+.sidebar-nav {
+  height: calc(100% - 4rem);
+}
