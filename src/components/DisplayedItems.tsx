@@ -40,24 +40,25 @@ const DisplayedItems = (props: DisplayedItemsProps) => {
           }
         }
       }
+      console.log(uniqueManufacturers.length);
 
       for (const manu of uniqueManufacturers) {
         let response: AvailabilityData[] = [];
-        while (response.length === 0) {
-          try {
-            console.log("FETCHIG");
-            const result = (await axios.get(`/availability/${manu}`)).data
-              .response;
-            console.log(result);
-            console.log(typeof result);
-            if (typeof result === "string") {
-              response = [];
-            }
-          } catch (e: unknown) {
-            console.log("Co loi rui");
+        try {
+          console.log("FETCHIG");
+          const result = (await axios.get(`/availability/${manu}`)).data
+            .response;
+          console.log(manu);
+          console.log(result);
+          console.log(typeof result);
+          if (typeof result === "string") {
             response = [];
+          } else {
+            response = result;
           }
-          setTimeout(() => {}, 3000);
+        } catch (e: unknown) {
+          console.log("Co loi rui");
+          response = [];
         }
         updateManuData(response, manu);
       }
