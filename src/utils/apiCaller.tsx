@@ -1,8 +1,8 @@
 import axios from "axios";
+import { API_URL, PROXY_URL } from "../constants";
 
 const instance = axios.create({
-  baseURL:
-    "https://api.allorigins.win/get?url=https://bad-api-assignment.reaktor.com/v2",
+  baseURL: PROXY_URL + API_URL,
 });
 
 instance.interceptors.request.use(
