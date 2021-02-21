@@ -1,7 +1,12 @@
-import React from "react";
+import axios from "../utils/apiCaller";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { ITEM_PER_PAGE } from "../constants";
-import ClothesItem from "./ClothesItem";
+import {
+  AvailabilityContext,
+  AvailabilityData,
+} from "../contexts/AvailabilityContext";
+import ClothesItem, { ItemWithAvailability } from "./ClothesItem";
 import { Item } from "./ClothesItems";
 
 interface PageParams {
@@ -12,12 +17,87 @@ export interface DisplayedItemsProps extends RouteComponentProps<PageParams> {
 }
 
 const DisplayedItems = (props: DisplayedItemsProps) => {
-  const displayedItems = props.items.slice(
-    ITEM_PER_PAGE * (parseInt(props.match.params.page) - 1),
-    ITEM_PER_PAGE * parseInt(props.match.params.page)
+  const { availData, updateManuData } = useContext(AvailabilityContext);
+  const [isManuloaded, setIsManuloaded] = useState(false);
+  const displayedItems = useMemo(
+    () =>
+      props.items.slice(
+        ITEM_PER_PAGE * (parseInt(props.match.params.page) - 1),
+        ITEM_PER_PAGE * parseInt(props.match.params.page)
+      ),
+    [props.items, props.match.params.page]
   );
-  const result = displayedItems.map((item: Item) => (
-    <ClothesItem key={item.id} {...item} availability="NOT AVAILABLE NOW!" />
+
+  useEffect(() => {
+    const fetchManu = async () => {
+      const uniqueManufacturers: string[] = [];
+      for (const item of displayedItems) {
+        if (
+          !availData.some((data) => data.manufacturer === item.manufacturer)
+        ) {
+          if (!uniqueManufacturers.includes(item.manufacturer)) {
+            uniqueManufacturers.push(item.manufacturer);
+          }
+        }
+      }
+
+      for (const manu of uniqueManufacturers) {
+        let response: AvailabilityData[] = [];
+        while (response.length === 0) {
+          try {
+            console.log("FETCHIG");
+            const result = (await axios.get(`/availability/${manu}`)).data
+              .response;
+            console.log(result);
+            console.log(typeof result);
+            if (typeof result === "string") {
+              response = [];
+            }
+          } catch (e: unknown) {
+            console.log("Co loi rui");
+            response = [];
+          }
+          setTimeout(() => {}, 3000);
+        }
+        updateManuData(response, manu);
+      }
+    };
+    fetchManu();
+    setIsManuloaded(true);
+    console.log("hahaha");
+  }, [props.match.params.page]);
+
+  if (availData.length !== 6) {
+    return null;
+  }
+  console.log(isManuloaded);
+  console.log(availData);
+  const displayItemsWithAvail: ItemWithAvailability[] = [];
+  for (const item of displayedItems) {
+    const manufacturerIndex = availData.findIndex(
+      (data) => data.manufacturer === item.manufacturer
+    );
+    const itemIndex = availData[manufacturerIndex].data.findIndex(
+      (data) => data.id === item.id
+    );
+    if (itemIndex === -1) {
+      displayItemsWithAvail.push({
+        ...item,
+        availability: "NO INFO AVAILABLE",
+      });
+    } else {
+      const itemAvailData =
+        availData[manufacturerIndex].data[itemIndex].DATAPAYLOAD;
+      const leftIndex = itemAvailData.indexOf("<INSTOCKVALUE>") + 14;
+      const rightIndex = itemAvailData.indexOf("</INSTOCKVALUE>");
+      displayItemsWithAvail.push({
+        ...item,
+        availability: itemAvailData.slice(leftIndex, rightIndex),
+      });
+    }
+  }
+  const result = displayItemsWithAvail.map((item: ItemWithAvailability) => (
+    <ClothesItem key={item.id} {...item} />
   ));
   return (
     <div className="grid grid-cols-1 gap-3 px-4 pt-16 pb-4 mt-4 sm:pr-2 sm:pl-56 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">

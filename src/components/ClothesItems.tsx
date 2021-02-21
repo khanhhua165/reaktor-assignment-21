@@ -21,7 +21,7 @@ export interface Item {
 const ClothesItems = (props: ClothesItemsProps) => {
   const allItems = useContext(ItemsContext);
   const currentItems = allItems[props.match.params.item];
-  if (!currentItems) return null;
+  if (currentItems.length === 0) return null;
 
   return (
     <div>

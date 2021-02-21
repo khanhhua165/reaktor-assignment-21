@@ -1,6 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import { ItemsContext } from "./ItemsContext";
-import axios from "../utils/apiCaller";
 
 type ManufacturersType = string[];
 export interface AvailabilityData {
@@ -13,25 +12,13 @@ export interface AvailabilityType {
 }
 interface AvailabilityWithFetch {
   availData: AvailabilityType[];
-  fetchAvailability: (manufacturer: string) => Promise<any>;
-  updateManuData: (manufacturer: string, availData: AvailabilityData[]) => void;
+  updateManuData: (data: AvailabilityData[], manufacturer: string) => void;
 }
 
 export const AvailabilityContext = createContext<AvailabilityWithFetch>({
   availData: [],
-  fetchAvailability: (manufacturer: string) => Promise.all([]),
-  updateManuData: (manufacturer: string, availData: AvailabilityData[]) => {},
+  updateManuData: (data: AvailabilityData[], manufacturer: string) => {},
 });
-
-const fetchAvailability = async (manufacturer: string) => {
-  console.log("FETCHING AVAIL");
-  try {
-    const response = await axios.get(`/availability/${manufacturer}`);
-    return response.data.response;
-  } catch (e: unknown) {
-    return [];
-  }
-};
 
 const AvailabilityComponent = (props: { children: JSX.Element }) => {
   const [manufacturersData, setManufacturersData] = useState<ManufacturersType>(
@@ -52,21 +39,19 @@ const AvailabilityComponent = (props: { children: JSX.Element }) => {
     });
   }
 
-  const updateManuData = (
-    manufacturer: string,
-    availData: AvailabilityData[]
-  ) => {
-    setAvailabilitiesData((prevData) => [
-      ...prevData,
-      { manufacturer: manufacturer, data: availData },
-    ]);
-  };
-
+  const updateManuData = useCallback(
+    (data: AvailabilityData[], manufacturer: string) => {
+      setAvailabilitiesData((prevData) => [
+        ...prevData,
+        { manufacturer, data },
+      ]);
+    },
+    []
+  );
   return (
     <AvailabilityContext.Provider
       value={{
         availData: availabilitiesData,
-        fetchAvailability,
         updateManuData,
       }}
     >
