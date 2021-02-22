@@ -6,7 +6,7 @@ const instance = axios.create({
 });
 
 instance.defaults.timeout = 20000;
-instance.interceptors.request.use(
+instance.interceptors.response.use(
   (response) => {
     return response;
   },

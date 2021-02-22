@@ -6,6 +6,10 @@
   @apply border-b-4 border-blue-400;
 }
 
+.main-active {
+  @apply border-b-4 border-gray-50;
+}
+
 .sidebar-nav {
   height: calc(100% - 4rem);
 }

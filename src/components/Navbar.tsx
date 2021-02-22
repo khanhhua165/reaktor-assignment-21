@@ -3,18 +3,20 @@ import NavItem from "./NavItem";
 import { NavLink } from "react-router-dom";
 
 const Navbar: React.FC = () => {
+  const items = [
+    { path: "/beanies", name: "Beanies" },
+    { path: "/facemasks", name: "Face Masks" },
+    { path: "/gloves", name: "Gloves" },
+  ];
+  const navItems = items.map((item) => (
+    <NavLink key={item.name} activeClassName="main-active" to={item.path}>
+      <NavItem itemName={item.name} />
+    </NavLink>
+  ));
   return (
     <div className="fixed top-0 left-0 z-20 w-full h-16 bg-indigo-700 shadow-md">
       <div className="flex items-center justify-center h-full max-w-6xl mx-auto space-x-6 font-semibold text-white">
-        <NavLink to="/beanies">
-          <NavItem itemName="Beanies" />
-        </NavLink>
-        <NavLink to="/facemasks">
-          <NavItem itemName="Face Masks" />
-        </NavLink>
-        <NavLink to="/gloves">
-          <NavItem itemName="Gloves" />
-        </NavLink>
+        {navItems}
       </div>
     </div>
   );

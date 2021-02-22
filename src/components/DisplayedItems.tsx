@@ -109,7 +109,7 @@ const DisplayedItems = (props: DisplayedItemsProps) => {
     <ClothesItem key={item.id} {...item} />
   ));
   return (
-    <div className="grid grid-cols-1 gap-3 px-4 pt-16 pb-4 mt-4 sm:pr-2 sm:pl-56 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div className="grid grid-cols-1 gap-3 px-4 pt-16 pb-4 mt-4 sm:pl-56 sm:pr-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
       {result}
     </div>
   );
