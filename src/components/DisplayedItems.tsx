@@ -8,6 +8,7 @@ import {
 } from "../contexts/AvailabilityContext";
 import ClothesItem, { ItemWithAvailability } from "./ClothesItem";
 import { Item } from "./ClothesItems";
+import SkeletonCard from "./SkeletonCard";
 
 interface PageParams {
   page: string;
@@ -29,10 +30,6 @@ const DisplayedItems = (props: DisplayedItemsProps) => {
       ),
     [props.items, props.match.params.page]
   );
-
-  if (availDataRef.current !== availData) {
-    availDataRef.current = availData;
-  }
 
   useEffect(() => {
     const fetchManu = async () => {
@@ -76,10 +73,21 @@ const DisplayedItems = (props: DisplayedItemsProps) => {
     };
     fetchManu();
   }, [displayedItems]);
+  if (availDataRef.current !== availData) {
+    availDataRef.current = availData;
+  }
   console.log("mount");
   console.log(isManuloaded);
+
   if (!isManuloaded) {
-    return null;
+    const skeleton = [...Array(ITEM_PER_PAGE).keys()].map((item) => (
+      <SkeletonCard key={item} />
+    ));
+    return (
+      <div className="grid grid-cols-1 gap-3 px-4 pt-16 pb-4 mt-4 sm:pl-56 sm:pr-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+        {skeleton}
+      </div>
+    );
   }
   const displayItemsWithAvail: ItemWithAvailability[] = [];
   for (const item of displayedItems) {
