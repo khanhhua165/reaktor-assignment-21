@@ -1,5 +1,5 @@
 import axios from "../utils/apiCaller";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { ITEM_PER_PAGE } from "../constants";
 import {
@@ -18,6 +18,8 @@ export interface DisplayedItemsProps extends RouteComponentProps<PageParams> {
 
 const DisplayedItems = (props: DisplayedItemsProps) => {
   const { availData, updateManuData } = useContext(AvailabilityContext);
+  const availDataRef = useRef(availData);
+  const updateManuDataRef = useRef(updateManuData);
   const [isManuloaded, setIsManuloaded] = useState(false);
   const displayedItems = useMemo(
     () =>
@@ -28,20 +30,27 @@ const DisplayedItems = (props: DisplayedItemsProps) => {
     [props.items, props.match.params.page]
   );
 
+  if (availDataRef.current !== availData) {
+    availDataRef.current = availData;
+  }
+
   useEffect(() => {
     const fetchManu = async () => {
+      setIsManuloaded(false);
       const uniqueManufacturers: string[] = [];
       for (const item of displayedItems) {
         if (
-          !availData.some((data) => data.manufacturer === item.manufacturer)
+          !availDataRef.current.some(
+            (data) => data.manufacturer === item.manufacturer
+          )
         ) {
           if (!uniqueManufacturers.includes(item.manufacturer)) {
             uniqueManufacturers.push(item.manufacturer);
           }
         }
       }
-      console.log(uniqueManufacturers.length);
 
+      console.log(uniqueManufacturers.length);
       for (const manu of uniqueManufacturers) {
         let response: AvailabilityData[] = [];
         try {
@@ -60,26 +69,25 @@ const DisplayedItems = (props: DisplayedItemsProps) => {
           console.log("Co loi rui");
           response = [];
         }
-        updateManuData(response, manu);
+        updateManuDataRef.current(response, manu);
       }
+      setIsManuloaded(true);
+      console.log("hahaha");
     };
     fetchManu();
-    setIsManuloaded(true);
-    console.log("hahaha");
-  }, [props.match.params.page]);
-
-  if (availData.length !== 6) {
+  }, [displayedItems]);
+  console.log("mount");
+  console.log(isManuloaded);
+  if (!isManuloaded) {
     return null;
   }
-  console.log(isManuloaded);
-  console.log(availData);
   const displayItemsWithAvail: ItemWithAvailability[] = [];
   for (const item of displayedItems) {
     const manufacturerIndex = availData.findIndex(
       (data) => data.manufacturer === item.manufacturer
     );
     const itemIndex = availData[manufacturerIndex].data.findIndex(
-      (data) => data.id === item.id
+      (data) => data.id === item.id.toUpperCase()
     );
     if (itemIndex === -1) {
       displayItemsWithAvail.push({

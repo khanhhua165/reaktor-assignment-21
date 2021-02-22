@@ -1,7 +1,5 @@
-import { createContext, useCallback, useContext, useState } from "react";
-import { ItemsContext } from "./ItemsContext";
+import React, { createContext, useCallback, useState } from "react";
 
-type ManufacturersType = string[];
 export interface AvailabilityData {
   id: string;
   DATAPAYLOAD: string;
@@ -10,34 +8,20 @@ export interface AvailabilityType {
   manufacturer: string;
   data: AvailabilityData[];
 }
-interface AvailabilityWithFetch {
+interface AvailabilityContextType {
   availData: AvailabilityType[];
   updateManuData: (data: AvailabilityData[], manufacturer: string) => void;
 }
 
-export const AvailabilityContext = createContext<AvailabilityWithFetch>({
+export const AvailabilityContext = createContext<AvailabilityContextType>({
   availData: [],
   updateManuData: (data: AvailabilityData[], manufacturer: string) => {},
 });
 
 const AvailabilityComponent = (props: { children: JSX.Element }) => {
-  const [manufacturersData, setManufacturersData] = useState<ManufacturersType>(
-    []
-  );
   const [availabilitiesData, setAvailabilitiesData] = useState<
     AvailabilityType[]
   >([]);
-  const allItems = useContext(ItemsContext);
-  for (const itemType in allItems) {
-    allItems[itemType].forEach((item) => {
-      if (!manufacturersData.includes(item.manufacturer)) {
-        setManufacturersData((prevManufacturersData) => [
-          ...prevManufacturersData,
-          item.manufacturer,
-        ]);
-      }
-    });
-  }
 
   const updateManuData = useCallback(
     (data: AvailabilityData[], manufacturer: string) => {

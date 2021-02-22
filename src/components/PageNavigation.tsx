@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { ITEM_PER_PAGE } from "../constants";
 
 const PageNavigation = (props: { itemsLength: number; currentUrl: string }) => {
   const [sideBarState, setsideBarState] = useState("hidden");
+
   const handleClick = (e: React.MouseEvent) => {
     if (sideBarState === "hidden") {
       setsideBarState("");
@@ -10,9 +12,9 @@ const PageNavigation = (props: { itemsLength: number; currentUrl: string }) => {
       setsideBarState("hidden");
     }
   };
-  const itemsPerPage = 20;
+
   const totalPage = [
-    ...Array(Math.ceil(props.itemsLength / itemsPerPage)).keys(),
+    ...Array(Math.ceil(props.itemsLength / ITEM_PER_PAGE)).keys(),
   ].map((page) => page + 1);
   const pageNavigation = totalPage.map((page) => (
     <NavLink
@@ -58,8 +60,9 @@ const PageNavigation = (props: { itemsLength: number; currentUrl: string }) => {
   return (
     <div>
       <div
-        className={`fixed bottom-0 left-0 z-10 ${sideBarState} overflow-y-scroll bg-gray-300 sm:block w-52 sidebar-nav shadow-xl`}
+        className={`fixed bottom-0 left-0 z-10 ${sideBarState} overflow-y-scroll bg-gray-300 sm:block w-52 sidebar-nav shadow-xl grid grid-cols-1`}
       >
+        <div className="pt-2 pl-4 font-semibold">Pages</div>
         <div className="grid w-full grid-cols-4 gap-0.5 px-2 py-2">
           {pageNavigation}
         </div>

@@ -7,8 +7,8 @@ import PageNavigation from "./PageNavigation";
 interface ItemParams {
   item: string;
 }
-type ClothesItemsProps = RouteComponentProps<ItemParams>;
 
+type ClothesItemsProps = RouteComponentProps<ItemParams>;
 export interface Item {
   id: string;
   type: string;
@@ -20,6 +20,7 @@ export interface Item {
 
 const ClothesItems = (props: ClothesItemsProps) => {
   const allItems = useContext(ItemsContext);
+
   const currentItems = allItems[props.match.params.item];
   if (currentItems.length === 0) return null;
 
