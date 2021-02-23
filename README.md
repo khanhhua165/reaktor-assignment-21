@@ -6,6 +6,22 @@ My solution to [Reaktor junior developers assignment](https://www.reaktor.com/ju
 
 _The webpage can be slow on first load as the APIs are slow to be fetched at times._
 
+## App Structure
+
+```
+index
+│
+└───App
+    │
+    └───ClothesItems
+        │
+        └──PageNavigation
+        │
+        └──DisplayedItems
+           │
+           └──ClothesItem
+```
+
 ### Installation
 
 ```bash
