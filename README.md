@@ -4,7 +4,7 @@ My solution to [Reaktor junior developers assignment](https://www.reaktor.com/ju
 
 ### You can find the demo project live [here](https://reaktor-store-2021.netlify.app).
 
-_The webpage can be slow on first load as the APIs are slow to fetch at times._
+_The webpage can be slow on first load as the APIs are slow to be fetched at times._
 
 ### Installation
 
@@ -22,5 +22,5 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## Built With
 
-- [ReactJs](https://reactjs.org/)
+- [ReactJS](https://reactjs.org/)
 - [TailwindCSS](https://tailwindcss.com/)
