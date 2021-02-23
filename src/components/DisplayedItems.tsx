@@ -1,6 +1,6 @@
 import axios from "../utils/apiCaller";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { Redirect, RouteComponentProps } from "react-router-dom";
 import { ITEM_PER_PAGE } from "../constants";
 import {
   AvailabilityContext,
@@ -15,6 +15,7 @@ interface PageParams {
 }
 export interface DisplayedItemsProps extends RouteComponentProps<PageParams> {
   items: Item[];
+  itemParam: string;
 }
 interface AvailabilityReponse {
   code: number;
@@ -71,7 +72,11 @@ const DisplayedItems = (props: DisplayedItemsProps) => {
     };
     fetchManu();
   }, [displayedItems]);
-
+  if (
+    +props.match.params.page > Math.ceil(props.items.length / ITEM_PER_PAGE)
+  ) {
+    return <Redirect to={`/${props.itemParam}`} />;
+  }
   if (availDataRef.current !== availData) {
     availDataRef.current = availData;
   }

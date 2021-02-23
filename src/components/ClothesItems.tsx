@@ -23,6 +23,9 @@ const ClothesItems = (props: ClothesItemsProps) => {
   const allItems = useContext(ItemsContext);
 
   const currentItems = allItems[props.match.params.item];
+  if (!currentItems) {
+    return <Redirect to="/" />;
+  }
   if (currentItems.length === 0) {
     return (
       <div className="flex flex-col items-center w-full mt-28">
@@ -41,7 +44,11 @@ const ClothesItems = (props: ClothesItemsProps) => {
         <Route
           path={`${props.match.url}/:page`}
           render={(routeProps) => (
-            <DisplayedItems {...routeProps} items={currentItems} />
+            <DisplayedItems
+              {...routeProps}
+              items={currentItems}
+              itemParam={props.match.params.item}
+            />
           )}
         />
       </Switch>
