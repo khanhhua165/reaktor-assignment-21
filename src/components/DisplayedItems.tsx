@@ -18,7 +18,7 @@ export interface DisplayedItemsProps extends RouteComponentProps<PageParams> {
 }
 interface AvailabilityReponse {
   code: number;
-  response: AvailabilityData[];
+  response: AvailabilityData[] | string;
 }
 
 const DisplayedItems = (props: DisplayedItemsProps) => {
