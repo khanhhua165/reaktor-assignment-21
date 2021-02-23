@@ -13,6 +13,8 @@ index
 │
 └───App
     │
+    └───NavBar
+    │
     └───ClothesItems
         │
         └──PageNavigation
