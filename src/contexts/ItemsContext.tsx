@@ -17,21 +17,17 @@ const ItemsContextComponent = (props: { children: JSX.Element }) => {
   const [glovesData, setGlovesData] = useState<Item[]>([]);
   useEffect(() => {
     const fetchAPI = async () => {
-      try {
-        const fetchBeanies = axios.get("/products/beanies");
-        const fetchFaceMasks = axios.get("/products/facemasks");
-        const fetchGloves = axios.get("/products/gloves");
-        const [beanies, faceMasks, gloves] = await Promise.all([
-          fetchBeanies,
-          fetchFaceMasks,
-          fetchGloves,
-        ]);
-        setBeaniesData(beanies.data);
-        setFaceMasksData(faceMasks.data);
-        setGlovesData(gloves.data);
-      } catch (e: unknown) {
-        console.log("in Items Context: " + e);
-      }
+      const fetchBeanies = axios.get<Item[]>("/products/beanies");
+      const fetchFaceMasks = axios.get<Item[]>("/products/facemasks");
+      const fetchGloves = axios.get<Item[]>("/products/gloves");
+      const [beanies, faceMasks, gloves] = await Promise.all([
+        fetchBeanies,
+        fetchFaceMasks,
+        fetchGloves,
+      ]);
+      setBeaniesData(beanies.data);
+      setFaceMasksData(faceMasks.data);
+      setGlovesData(gloves.data);
     };
     fetchAPI();
   }, []);

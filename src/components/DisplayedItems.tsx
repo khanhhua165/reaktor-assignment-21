@@ -16,6 +16,10 @@ interface PageParams {
 export interface DisplayedItemsProps extends RouteComponentProps<PageParams> {
   items: Item[];
 }
+interface AvailabilityReponse {
+  code: number;
+  response: AvailabilityData[];
+}
 
 const DisplayedItems = (props: DisplayedItemsProps) => {
   const { availData, updateManuData } = useContext(AvailabilityContext);
@@ -47,37 +51,30 @@ const DisplayedItems = (props: DisplayedItemsProps) => {
         }
       }
 
-      console.log(uniqueManufacturers.length);
       for (const manu of uniqueManufacturers) {
         let response: AvailabilityData[] = [];
         try {
-          console.log("FETCHIG");
-          const result = (await axios.get(`/availability/${manu}`)).data
-            .response;
-          console.log(manu);
-          console.log(result);
-          console.log(typeof result);
+          const result = (
+            await axios.get<AvailabilityReponse>(`/availability/${manu}`)
+          ).data.response;
           if (typeof result === "string") {
             response = [];
           } else {
             response = result;
           }
         } catch (e: unknown) {
-          console.log("Co loi rui");
           response = [];
         }
         updateManuDataRef.current(response, manu);
       }
       setIsManuloaded(true);
-      console.log("hahaha");
     };
     fetchManu();
   }, [displayedItems]);
+
   if (availDataRef.current !== availData) {
     availDataRef.current = availData;
   }
-  console.log("mount");
-  console.log(isManuloaded);
 
   if (!isManuloaded) {
     const skeleton = [...Array(ITEM_PER_PAGE).keys()].map((item) => (
@@ -89,6 +86,7 @@ const DisplayedItems = (props: DisplayedItemsProps) => {
       </div>
     );
   }
+
   const displayItemsWithAvail: ItemWithAvailability[] = [];
   for (const item of displayedItems) {
     const manufacturerIndex = availData.findIndex(

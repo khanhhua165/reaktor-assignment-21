@@ -4,7 +4,6 @@ const ColorDot = (props: { color: string }) => {
   const divStyle = {
     backgroundColor: props.color,
   };
-  console.log();
   return (
     <>
       <div

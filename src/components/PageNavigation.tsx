@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { ITEM_PER_PAGE } from "../constants";
+import BurgerButton from "../svgs/BurgerButton";
+import CloseButton from "../svgs/CloseButton";
 
 const PageNavigation = (props: { itemsLength: number; currentUrl: string }) => {
   const [sideBarState, setsideBarState] = useState("hidden");
@@ -28,35 +30,7 @@ const PageNavigation = (props: { itemsLength: number; currentUrl: string }) => {
     </NavLink>
   ));
   const mobileButton =
-    sideBarState === "hidden" ? (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M4 8h16M4 16h16"
-        />
-      </svg>
-    ) : (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
-    );
+    sideBarState === "hidden" ? <BurgerButton /> : <CloseButton />;
   return (
     <div>
       <div
